@@ -33,11 +33,11 @@ const BookingPage: React.FC = () => {
           Oferecemos uma gama de tratamentos de estética avançada para realçar sua beleza natural.
         </p>
         <div className="flex flex-wrap justify-center gap-2">
-            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Criolipólise</span>
-            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Lavieen Day</span>
-            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Botox</span>
-            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Preenchimento</span>
-            <span className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm">Bioestimuladores</span>
+            <a href="https://chat.whatsapp.com/B7lyW8UpErDG1vHbV8odgu" target="_blank" rel="noopener noreferrer" className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm hover:bg-pink-200 transition-colors">Criolipólise</a>
+            <a href="https://chat.whatsapp.com/IPA9KvdmcuE0DHJEnbLlW0" target="_blank" rel="noopener noreferrer" className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm hover:bg-pink-200 transition-colors">Lavieen Day</a>
+            <a href="https://chat.whatsapp.com/HZX2BN9ashP7VoWNJ1fqSB" target="_blank" rel="noopener noreferrer" className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm hover:bg-pink-200 transition-colors">Botox</a>
+            <a href="https://chat.whatsapp.com/HZX2BN9ashP7VoWNJ1fqSB" target="_blank" rel="noopener noreferrer" className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm hover:bg-pink-200 transition-colors">Preenchimento</a>
+            <a href="https://chat.whatsapp.com/HZX2BN9ashP7VoWNJ1fqSB" target="_blank" rel="noopener noreferrer" className="bg-pink-100 text-pink-800 px-3 py-1 rounded-full text-sm hover:bg-pink-200 transition-colors">Bioestimuladores</a>
         </div>
         <p className="text-xs text-gray-400 mt-4">
           Explore todos os nossos serviços na aba 'Serviços' e entre em contato para saber mais.

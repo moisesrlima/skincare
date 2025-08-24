@@ -71,12 +71,18 @@ const ShopPage: React.FC = () => {
     <div className="space-y-4">
       <div className="text-center">
         <h2 className="text-2xl font-bold">Achadinhos da Shopee</h2>
-        <p className="text-gray-600">Produtos testados e aprovados pela Dra. Marilane!</p>
+        <p className="text-gray-600 text-sm">preços encontrados no dia 24 de agosto, os valores podem variar.</p>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {shopItems.map(item => (
           <ShopItemCard key={item.id} item={item} />
         ))}
+      </div>
+       <div className="bg-white p-4 rounded-xl shadow-md border border-pink-100 mt-6">
+        <h4 className="font-bold text-gray-700 text-sm">Aviso Importante</h4>
+        <p className="text-xs text-gray-600 mt-2">
+          Os produtos listados são sugestões testadas e aprovadas, mas não substituem uma avaliação profissional. Os links podem ser de afiliados; ao comprar através deles, você nos ajuda a manter o app funcionando.
+        </p>
       </div>
     </div>
   );
