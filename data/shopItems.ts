@@ -1,0 +1,62 @@
+import { ShopItem } from '../types';
+
+export const shopItems: ShopItem[] = [
+  {
+    id: '1',
+    name: '7 Cores Led Máscara Fóton Terapia Facial',
+    imageUrl: 'https://down-br.img.susercontent.com/file/sg-11134201-7rdyl-mdpqw1469c6c05.webp',
+    price: 'R$61,70',
+    originalPrice: 'R$99,50',
+    shopeeLink: 'https://s.shopee.com.br/5L1xjF0kqX',
+  },
+  {
+    id: '2',
+    name: 'Kit skin care limpeza de pele rosa mosqueta',
+    imageUrl: 'https://down-br.img.susercontent.com/file/br-11134207-7r98o-m2zlh3yzw07n8b.webp',
+    price: 'R$47,90',
+    originalPrice: 'R$76,90',
+    discount: '-38%',
+    shopeeLink: 'https://s.shopee.com.br/1qS5agb4BG',
+  },
+  {
+    id: '3',
+    name: 'Sérum Principia 10% Niacinamida + 1% Zinco Pca NC-10',
+    imageUrl: 'https://down-br.img.susercontent.com/file/br-11134207-7r98o-lz6e45k8w3z9d9.webp',
+    price: 'R$60,45',
+    originalPrice: 'R$64,99',
+    discount: '-7%',
+    shopeeLink: 'https://s.shopee.com.br/4VSqlsKC4g',
+  },
+  {
+    id: '4',
+    name: 'Kit Skin Care Bluemoon Black Mask com Carvão Ativado',
+    imageUrl: 'https://down-br.img.susercontent.com/file/br-11134207-7r98o-m9enogf30qgyfa.webp',
+    price: 'R$14,99 - R$49,99',
+    shopeeLink: 'https://s.shopee.com.br/8fIPjlyGw4',
+  },
+  {
+    id: '5',
+    name: 'NIVEA Hidratante Facial em Gel 100g',
+    imageUrl: 'https://down-br.img.susercontent.com/file/sg-11134201-7ra3s-m5c75r4i4gumf4.webp',
+    price: 'R$31,50',
+    originalPrice: 'R$69,98',
+    discount: '-55%',
+    shopeeLink: 'https://s.shopee.com.br/3ftjn78NO5',
+  },
+  {
+    id: '6',
+    name: 'NIVEA Creme Facial Noturno 100g',
+    imageUrl: 'https://down-br.img.susercontent.com/file/br-11134207-7qukw-ljr5ua9pheli7f.webp',
+    price: 'R$32,90',
+    originalPrice: 'R$41,90',
+    discount: '-21%',
+    shopeeLink: 'https://s.shopee.com.br/2B4w0QPfbG',
+  },
+  {
+    id: '7',
+    name: 'Escova Facial Elétrica Esfoliante Massageadora 5 em 1',
+    imageUrl: 'https://down-br.img.susercontent.com/file/sg-11134201-7rdwz-m0uutk3rhp459f.webp',
+    price: 'A partir de R$15,99',
+    shopeeLink: 'https://s.shopee.com.br/AUk3w6xr0x',
+  },
+];

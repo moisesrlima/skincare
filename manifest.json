@@ -1,0 +1,20 @@
+{
+  "short_name": "Innova Skin",
+  "name": "Innova Skincare Routine",
+  "icons": [
+    {
+      "src": "https://picsum.photos/192",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://picsum.photos/512",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FEF6F8",
+  "background_color": "#ffffff"
+}
