@@ -3,12 +3,12 @@
   "name": "Innova Skincare Routine",
   "icons": [
     {
-      "src": "https://picsum.photos/192",
+      "src": "icon-inova.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://picsum.photos/512",
+      "src": "icon-inova.png",
       "type": "image/png",
       "sizes": "512x512"
     }
