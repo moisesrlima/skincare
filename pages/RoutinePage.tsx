@@ -3,6 +3,14 @@ import useLocalStorage from '../hooks/useLocalStorage';
 import { DailyRoutine, RoutineStep } from '../types';
 import { SunIcon, MoonIcon } from '../components/icons/Icons';
 
+type RoutineStepTemplate = Omit<RoutineStep, 'completed'>;
+
+interface RoutinePageProps {
+    userName: string;
+    morningSteps: RoutineStepTemplate[];
+    nightSteps: RoutineStepTemplate[];
+}
+
 const WelcomeCard: React.FC<{ userName: string }> = ({ userName }) => {
   const [currentTime, setCurrentTime] = useState(new Date());
 
@@ -41,14 +49,6 @@ const WelcomeCard: React.FC<{ userName: string }> = ({ userName }) => {
   );
 };
 
-const defaultSteps: RoutineStep[] = [
-  { id: '1', name: 'Limpeza', description: 'Use um sabonete facial suave.', completed: false },
-  { id: '2', name: 'Tonificação', description: 'Aplique um tônico para equilibrar o pH.', completed: false },
-  { id: '3', name: 'Sérum', description: 'Use um sérum de tratamento específico.', completed: false },
-  { id: '4', name: 'Hidratação', description: 'Aplique um creme hidratante.', completed: false },
-  { id: '5', name: 'Proteção Solar', description: 'Finalize com protetor solar FPS 30+.', completed: false },
-];
-
 const getTodayDateString = () => new Date().toISOString().split('T')[0];
 
 const WeeklyStreakTracker: React.FC<{ routines: DailyRoutine[] }> = ({ routines }) => {
@@ -63,6 +63,7 @@ const WeeklyStreakTracker: React.FC<{ routines: DailyRoutine[] }> = ({ routines 
     const completedDays = new Set(
         routines
             .filter(r => {
+                if (!r.morning?.length && !r.night?.length) return false;
                 const morningComplete = r.morning.every(s => s.completed);
                 const nightComplete = r.night.every(s => s.completed);
                 return morningComplete && nightComplete;
@@ -94,7 +95,7 @@ const WeeklyStreakTracker: React.FC<{ routines: DailyRoutine[] }> = ({ routines 
 };
 
 
-const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
+const RoutinePage: React.FC<RoutinePageProps> = ({ userName, morningSteps, nightSteps }) => {
   const [routines, setRoutines] = useLocalStorage<DailyRoutine[]>('user_routines', []);
   const [activeTab, setActiveTab] = useState<'morning' | 'night'>('morning');
 
@@ -102,27 +103,52 @@ const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
   
   const getTodaysRoutine = useCallback(() => {
     let todayRoutine = routines.find(r => r.date === todayDate);
+
+    // Sync function to update a routine with the latest step templates
+    const syncRoutine = (routine: DailyRoutine, mSteps: RoutineStepTemplate[], nSteps: RoutineStepTemplate[]): DailyRoutine => {
+      const updatedMorning = mSteps.map(templateStep => {
+        const existingStep = routine.morning.find(s => s.id === templateStep.id);
+        return existingStep || { ...templateStep, completed: false };
+      });
+
+      const updatedNight = nSteps.map(templateStep => {
+        const existingStep = routine.night.find(s => s.id === templateStep.id);
+        return existingStep || { ...templateStep, completed: false };
+      });
+      return { ...routine, morning: updatedMorning, night: updatedNight };
+    };
+
     if (!todayRoutine) {
       todayRoutine = {
         date: todayDate,
-        morning: defaultSteps.map(s => ({ ...s, completed: false })),
-        night: defaultSteps.filter(s => s.name !== 'Proteção Solar').map(s => ({ ...s, completed: false })),
+        morning: morningSteps.map(s => ({ ...s, completed: false })),
+        night: nightSteps.map(s => ({ ...s, completed: false })),
       };
-      // Prevent stale closure by reading routines from function scope
-      setRoutines(prevRoutines => {
-        const updatedRoutines = [...prevRoutines.slice(-30), todayRoutine!];
-        return updatedRoutines;
-      });
+      setRoutines(prevRoutines => [...prevRoutines.slice(-30), todayRoutine!]);
+    } else {
+        // If routine for today exists, check if it needs syncing with new templates
+        const syncedRoutine = syncRoutine(todayRoutine, morningSteps, nightSteps);
+        // Check if steps have actually changed to avoid infinite loops
+        if (JSON.stringify(syncedRoutine) !== JSON.stringify(todayRoutine)) {
+            todayRoutine = syncedRoutine;
+            setRoutines(prevRoutines => {
+                const newRoutines = [...prevRoutines];
+                const index = newRoutines.findIndex(r => r.date === todayDate);
+                if (index !== -1) {
+                    newRoutines[index] = todayRoutine;
+                }
+                return newRoutines;
+            });
+        }
     }
     return todayRoutine;
-  }, [routines, setRoutines, todayDate]);
+  }, [routines, setRoutines, todayDate, morningSteps, nightSteps]);
 
   const [todayRoutine, setTodayRoutine] = useState(getTodaysRoutine);
 
   useEffect(() => {
     setTodayRoutine(getTodaysRoutine());
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [todayDate, routines]); // Rerun if routines change to get latest
+  }, [getTodaysRoutine]);
 
 
   const handleToggleStep = (stepId: string) => {
@@ -141,7 +167,6 @@ const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
           if (routineIndex > -1) {
             newRoutines[routineIndex] = updatedTodayRoutine;
           } else {
-            // This case should be handled by getTodaysRoutine, but as a fallback:
             newRoutines.push(updatedTodayRoutine);
           }
           return newRoutines;
@@ -149,9 +174,9 @@ const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
     }
   };
 
-  const currentSteps = todayRoutine.morning && activeTab === 'morning' ? todayRoutine.morning : todayRoutine.night;
+  const currentSteps = activeTab === 'morning' ? todayRoutine?.morning || [] : todayRoutine?.night || [];
   const completedCount = currentSteps.filter(s => s.completed).length;
-  const progress = (completedCount / currentSteps.length) * 100;
+  const progress = currentSteps.length > 0 ? (completedCount / currentSteps.length) * 100 : 0;
 
   const dailyTips = [
     "Beba 2 litros de água para uma pele radiante de dentro para fora.",
@@ -175,6 +200,9 @@ const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
       </div>
       
       <div>
+        <div className="text-center text-xs text-gray-500 p-2 mb-2 bg-pink-100 rounded-md">
+          ✨ Personalize sua rotina! Clique na engrenagem ⚙️ no topo para editar os passos.
+        </div>
         <div className="flex bg-gray-200 rounded-lg p-1">
             <button onClick={() => setActiveTab('morning')} className={`w-1/2 p-2 rounded-md font-semibold flex items-center justify-center gap-2 transition-all ${activeTab === 'morning' ? 'bg-[#E18AAA] text-white shadow' : 'text-gray-600'}`}>
                 <SunIcon /> Manhã
@@ -188,15 +216,19 @@ const RoutinePage: React.FC<{ userName: string }> = ({ userName }) => {
                 <div className="bg-pink-400 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progress}%` }}></div>
             </div>
             <ul className="space-y-3">
-                {currentSteps.map(step => (
-                    <li key={step.id} onClick={() => handleToggleStep(step.id)} className="flex items-center cursor-pointer p-3 bg-gray-50 rounded-lg">
-                        <input type="checkbox" checked={step.completed} readOnly className="h-6 w-6 rounded-full border-gray-300 text-[#E18AAA] focus:ring-[#E18AAA]"/>
-                        <div className="ml-3">
-                            <p className={`font-semibold ${step.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>{step.name}</p>
-                            <p className="text-sm text-gray-500">{step.description}</p>
-                        </div>
-                    </li>
-                ))}
+              {currentSteps.length > 0 ? currentSteps.map(step => (
+                  <li key={step.id} onClick={() => handleToggleStep(step.id)} className="flex items-center cursor-pointer p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      <input type="checkbox" checked={step.completed} readOnly className="h-6 w-6 rounded-full border-gray-300 text-[#E18AAA] focus:ring-transparent form-tick"/>
+                      <div className="ml-3">
+                          <p className={`font-semibold ${step.completed ? 'line-through text-gray-400' : 'text-gray-800'}`}>{step.name}</p>
+                          <p className="text-sm text-gray-500">{step.description}</p>
+                      </div>
+                  </li>
+              )) : (
+                <li className="text-center text-gray-500 py-4">
+                    Nenhum passo na sua rotina de {activeTab === 'morning' ? 'manhã' : 'noite'}. Adicione passos nas preferências ⚙️!
+                </li>
+              )}
             </ul>
         </div>
       </div>
